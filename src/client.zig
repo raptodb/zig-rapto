@@ -175,7 +175,7 @@ pub const Client = struct {
 
         if (deadline.readms) |ms| try c.stream.setReadDeadline(ms);
         if (deadline.writems) |ms| try c.stream.setWriteDeadline(ms);
-        
+
         // check compatibility by version
         try c.stream.write(RAPTO_VERSION);
         const response = try c.stream.read(allocator);
