@@ -43,9 +43,7 @@ pub const CLIENT_VERSION = "0.1.0";
 pub const Commands = enum(u8) {
     PING,
 
-    ISET,
-    DSET,
-    SSET,
+    SET,
     UPDATE,
     RENAME,
 
@@ -77,10 +75,12 @@ pub const Commands = enum(u8) {
     SAVE,
     COPY,
 
+    DOWN,
+
     /// Parses text command to enum.
     pub fn parse(noalias command: []const u8) ?Commands {
         var i: u8 = 0;
-        while (i < 30) : (i += 1) {
+        while (i < 29) : (i += 1) {
             const tag = @as(Commands, @enumFromInt(i));
             if (std.ascii.eqlIgnoreCase(command, @tagName(tag)))
                 return tag;
