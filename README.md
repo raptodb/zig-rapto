@@ -62,7 +62,7 @@ std.debug.print("{s}\n", .{res}); // print response of query
 ```zig
 // parsing examples
 Query.fromText(allocator, "ISET foo 150");
-Query..fromEnum(allocator, .ISET, "foo 150");
+Query.fromEnum(allocator, .ISET, "foo 150");
 Query.fromComptime(.ISET, "foo 150");
 ```
 
