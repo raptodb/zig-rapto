@@ -73,8 +73,7 @@ This step is already in ReleaseFast mode.
 
 Tested on `system=WSL2 cpu=i7-12700H version=0.1.0`:
 ```
-ISET: min=53994ns max=1717353ns avg=88205ns
-DSET: min=84068ns max=663133ns avg=122435ns
-SSET: min=81866ns max=3562713ns avg=165036ns
-GET: min=0ns max=681156ns avg=20764ns
+Benchmarks version=0.1.0 epochs=2000:
+SET: min=52615ns max=440281ns avg=92026ns
+GET: min=44712ns max=679387ns avg=55844ns
 ```
