@@ -61,7 +61,7 @@ std.debug.print("{s}\n", .{res}); // print response of query
 
 ```zig
 // parsing examples
-.fromText(allocator, "ISET foo 150);
+Query.fromText(allocator, "ISET foo 150);
 .fromEnum(allocator, .ISET, "foo 150");
 .fromComptime(.ISET, "foo 150");
 ```
@@ -71,10 +71,11 @@ std.debug.print("{s}\n", .{res}); // print response of query
 Benchmark can be tested with `zig build benchmark` step command.
 This step is already in ReleaseFast mode.
 
-Tested on `system=WSL2 cpu=i7-12700H version=0.1.0`:
+Tested on `system=WSL2 cpu=i7-12700H zig-version=0.14.0`:
 ```
-ISET: min=53994ns max=1717353ns avg=88205ns
-DSET: min=84068ns max=663133ns avg=122435ns
-SSET: min=81866ns max=3562713ns avg=165036ns
-GET: min=0ns max=681156ns avg=20764ns
+Benchmarks version=0.1.0 epochs=2000:
+ISET: min=52076ns max=758040ns avg=95612ns
+DSET: min=49229ns max=912714ns avg=92920ns
+SSET: min=49544ns max=2136367ns avg=87863ns
+GET: min=46457ns max=420521ns avg=56126ns
 ```
