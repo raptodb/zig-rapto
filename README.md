@@ -9,7 +9,7 @@ Copy `client.zig` on `/src` of your project and import it.
 ### Examples
 
 ```zig
-// IMPORTS
+// imports
 const Client = @import("client.zig").Client;
 const Query = @import("client.zig").Query;
 ```
