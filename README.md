@@ -74,12 +74,6 @@ This step is already in ReleaseFast mode.
 Tested on `system=WSL2 cpu=i7-12700H zig-version=0.14.0`:
 ```
 Benchmarks version=0.1.0 epochs=2000:
-ISET: min=52076ns max=758040ns avg=95612ns
-DSET: min=49229ns max=912714ns avg=92920ns
-SSET: min=49544ns max=2136367ns avg=87863ns
-GET: min=46457ns max=420521ns avg=56126ns
-```
-Benchmarks version=0.1.0 epochs=2000:
 SET: min=52615ns max=440281ns avg=92026ns
 GET: min=44712ns max=679387ns avg=55844ns
 ```
