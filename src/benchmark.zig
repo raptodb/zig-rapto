@@ -23,8 +23,6 @@ pub fn main() !void {
 }
 
 fn benchmark(allocator: std.mem.Allocator, client: *Client) !void {
-    @setEvalBranchQuota(std.math.maxInt(u32));
-
     // test set
     const set_stats = try set_bench(allocator, client, epochs);
     try eraseDatabase(allocator, client);
