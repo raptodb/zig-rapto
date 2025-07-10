@@ -40,7 +40,7 @@ const MAXFLOW = 1024 * 1024 * 512;
 pub const RAPTO_VERSION = "0.1.0";
 pub const CLIENT_VERSION = "0.1.0";
 
-pub const Commands = enum(u8) {
+pub const Command = enum(u8) {
     PING,
 
     SET,
@@ -78,15 +78,8 @@ pub const Commands = enum(u8) {
     DOWN,
 
     /// Parses text command to enum.
-    pub fn parse(noalias command: []const u8) ?Commands {
-        var i: u8 = 0;
-        while (i < 29) : (i += 1) {
-            const tag = @as(Commands, @enumFromInt(i));
-            if (std.ascii.eqlIgnoreCase(command, @tagName(tag)))
-                return tag;
-        }
-
-        return null;
+    pub inline fn parse(noalias command: []const u8) ?Command {
+        return std.meta.stringToEnum(Command, command);
     }
 };
 
@@ -94,7 +87,7 @@ pub const Query = struct {
     const Self = @This();
 
     raw_query: []const u8 = undefined,
-    command: Commands = undefined,
+    command: Command = undefined,
     args: []const u8 = undefined,
 
     pub const TextParsingError = error{ EmptyQuery, CommandNotFound, OutOfMemory };
@@ -111,7 +104,7 @@ pub const Query = struct {
 
         return fromEnum(
             allocator,
-            Commands.parse(trimmed[0..space_index]) orelse return error.CommandNotFound,
+            Command.parse(trimmed[0..space_index]) orelse return error.CommandNotFound,
             if (space_index < trimmed.len) trimmed[space_index + 1 ..] else null,
         );
     }
@@ -119,7 +112,7 @@ pub const Query = struct {
     /// Parses query from enum and optional arguments.
     /// This implementation is faster than fromText().
     /// Query must be freed with self.free().
-    pub fn fromEnum(allocator: std.mem.Allocator, command: Commands, args: ?[]const u8) error{OutOfMemory}!Self {
+    pub fn fromEnum(allocator: std.mem.Allocator, command: Command, args: ?[]const u8) error{OutOfMemory}!Self {
         var q = Self{};
 
         q.args = try allocator.dupe(u8, args orelse "");
@@ -130,7 +123,7 @@ pub const Query = struct {
     }
 
     /// Parses query in comptime.
-    pub fn fromComptime(comptime command: Commands, comptime args: ?[]const u8) Self {
+    pub fn fromComptime(comptime command: Command, comptime args: ?[]const u8) Self {
         comptime {
             var q = Self{};
 
@@ -250,18 +243,26 @@ const Stream = struct {
     pub fn read(self: *Self, allocator: std.mem.Allocator) ReadError![]u8 {
         var buflen: [8]u8 = undefined;
         const bufsize = try self.reader.readAll(&buflen);
-        if (bufsize == 0) return error.ConnectionResetByPeer;
-        if (bufsize != 8) return error.EndOfStream;
 
-        var len = std.mem.readInt(u64, &buflen, .little);
-        if (len == 0 or len > MAXFLOW)
-            return error.InvalidLength;
+        switch (bufsize) {
+            8 => {
+                @branchHint(.likely);
 
-        const buf: []u8 = try allocator.alloc(u8, len);
-        // receive buf according to length
-        len = try self.reader.readAll(buf);
+                var len = std.mem.readInt(u64, &buflen, .little);
+                if (len == 0 or len > MAXFLOW) {
+                    @branchHint(.unlikely);
+                    return error.InvalidLength;
+                }
 
-        return buf[0..len];
+                const buf: []u8 = try allocator.alloc(u8, len);
+                // receive buf according to length
+                len = try self.reader.readAll(buf);
+
+                return buf[0..len];
+            },
+            0 => return error.ConnectionResetByPeer,
+            else => return error.EndOfStream,
+        }
     }
 
     /// Writes to stream.
