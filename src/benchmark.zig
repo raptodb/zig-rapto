@@ -68,7 +68,7 @@ fn get_bench(allocator: std.mem.Allocator, client: *Client, comptime qty: u32) !
         const query = try Query.fromEnum(
             allocator,
             .GET,
-            try std.fmt.allocPrint(allocator, "key{d}", .{ i }),
+            try std.fmt.allocPrint(allocator, "key{d}", .{i}),
         );
 
         _, const latency = try client.sendQuery(allocator, query, true);
