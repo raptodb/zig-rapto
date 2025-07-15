@@ -79,7 +79,13 @@ pub const Command = enum(u8) {
 
     /// Parses text command to enum.
     pub inline fn parse(noalias command: []const u8) ?Command {
-        return std.meta.stringToEnum(Command, command);
+        var i: u8 = 0;
+        while (i < 29) : (i += 1) {
+            const tag = @as(Command, @enumFromInt(i));
+            if (std.ascii.eqlIgnoreCase(command, @tagName(tag)))
+                return tag;
+        }
+        return null;
     }
 };
 
