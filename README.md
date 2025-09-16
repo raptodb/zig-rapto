@@ -66,7 +66,7 @@ Query.fromEnum(allocator, .ISET, "foo 150");
 Query.fromComptime(.ISET, "foo 150");
 ```
 
-## Benchmark
+## Benchmarks
 
 Benchmark can be tested with `zig build benchmark` step command.
 This step is already in ReleaseFast mode.
@@ -77,3 +77,13 @@ Benchmarks version=0.1.0 epochs=2000:
 SET: min=52615ns max=440281ns avg=92026ns
 GET: min=44712ns max=679387ns avg=55844ns
 ```
+
+Tested on `system=kali-linux cpu=i7-12700H zig-version=0.14.1`:
+```
+Benchmarks version=0.1.0 epochs=2000:
+SET: min=12237ns max=190681ns avg=19795ns
+GET: min=11540ns max=25316ns avg=12373ns
+```
+
+> [!NOTE]
+> In tests, the server is started with the `--db-size` flag to take advantage of preallocation.
