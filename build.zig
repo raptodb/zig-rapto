@@ -38,9 +38,11 @@ pub fn build(b: *std.Build) void {
 
     const exe = b.addExecutable(.{
         .name = "benchmark",
-        .root_source_file = b.path("src/benchmark.zig"),
-        .target = target,
-        .optimize = .ReleaseFast,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/benchmark.zig"),
+            .target = target,
+            .optimize = .ReleaseFast,
+        }),
     });
 
     // for c_allocator
