@@ -17,7 +17,7 @@ pub fn main() !void {
 
     while (true) {
         std.debug.print("rapto> ", .{});
-        const input = try std.io.getStdIn().reader().readUntilDelimiterAlloc(allocator, '\n', 10000);
+        const input = try std.fs.File.stdin().deprecatedReader().readUntilDelimiterAlloc(allocator, '\n', 10000);
 
         var query = try Query.fromText(allocator, input);
         const res, const rl = try client.sendQuery(allocator, query, true);
